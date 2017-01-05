@@ -1,6 +1,7 @@
 class Api::V1::UsersController < ApplicationController
   respond_to :json
-
+  skip_before_action :authenticate_with_token!, :only => [:show]
+  
   def show
     respond_with User.find(params[:id])
   end

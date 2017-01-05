@@ -1,8 +1,11 @@
 class Api::V1::OrganizationsController < ApplicationController
   def index
+    # todo implement IS_ADMIN here
+    # organizations = paginate Organization.where({ user: current_user })
     organizations = paginate Organization.all
 
-    render json: organizations, :each_seralizer => OrganizationSerializer
+    render json: organizations, each_seralizer: OrganizationSerializer,
+      meta: { pagination: pagination_dict(organizations) }
   end
 
   def show
@@ -14,6 +17,7 @@ class Api::V1::OrganizationsController < ApplicationController
   def create
     organization = Organization.new(organization_params)
     organization.user = current_user
+
     if organization.save
       render json: organization, status: 201, location: [:api, organization]
     else
@@ -24,6 +28,6 @@ class Api::V1::OrganizationsController < ApplicationController
   private
 
     def organization_params
-      params.require(:organization).permit(:name, :contact_email)
+      params.require(:data).permit(:name, :contact_email)
     end
 end
